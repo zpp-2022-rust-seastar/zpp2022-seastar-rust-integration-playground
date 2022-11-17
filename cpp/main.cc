@@ -1,5 +1,5 @@
-extern "C" void hello_from_rust();
+extern "C" void hello_from_rust(int x);
 
 int main(void) {
-    hello_from_rust();
+    hello_from_rust(21);
 }
