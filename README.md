@@ -34,6 +34,7 @@ make
 
 Create a C++ static library `hello_from_cpp` that will be used by Rust.
 ```
+cd cpp
 g++ -c -fPIC hello_from_cpp.cc -o hello_from_cpp.o
 ar rcs libhello_from_cpp.a hello_from_cpp.o
 ```
