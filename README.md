@@ -41,11 +41,11 @@ ar rcs libhello_from_cpp.a hello_from_cpp.o
 Create a Rust dynamic library `hello_from_rust` that uses `hello_from_cpp` and will be used by `main`.
 ```
 cd ../rust
-HELLO_FROM_CPP_DIR="$(pwd)/../cpp" cargo build
+HELLO_FROM_CPP_DIR="$(pwd)/../cpp" cargo build --release
 ```
 Compile and execute `main` that uses `hello_from_rust`.
 ```
 cd ../cpp
-g++ main.cc -o main -lhello_from_rust -L../rust/target/debug
-LD_LIBRARY_PATH=../rust/target/debug ./main
+g++ main.cc -o main -lhello_from_rust -L../rust/target/release
+LD_LIBRARY_PATH=../rust/target/release ./main
 ```
