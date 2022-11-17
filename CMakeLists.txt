@@ -17,7 +17,7 @@ target_compile_options(hello_from_cpp PRIVATE "-fPIC")
 # "COMMAND" is the script executed to create target hello_from_rust
 # (or, in other words, to compile our Rust library).
 # "cd ${CMAKE_SOURCE_DIR}/rust/" goes into rust directory.
-# "HELLO_FROM_CPP_DIR=${CMAKE_CURRENT_BINARY_DIR} cargo build"
+# "HELLO_FROM_CPP_DIR=${CMAKE_CURRENT_BINARY_DIR} cargo build --release --target-dir ${CMAKE_SOURCE_DIR}/build/rust-target"
 # compiles Rust library with environment variable 
 # CMAKE_CURRENT_BINARY_DIR set to the direct path to build directory
 # (check rust/build.rs). So this works regardless of the build
@@ -28,7 +28,7 @@ target_compile_options(hello_from_cpp PRIVATE "-fPIC")
 add_custom_target(
     hello_from_rust
     COMMAND cd ${CMAKE_SOURCE_DIR}/rust/ &&
-            HELLO_FROM_CPP_DIR=${CMAKE_CURRENT_BINARY_DIR} cargo build --release
+            HELLO_FROM_CPP_DIR=${CMAKE_CURRENT_BINARY_DIR} cargo build --release --target-dir ${CMAKE_SOURCE_DIR}/build/rust-target
     DEPENDS hello_from_cpp
 )
 
@@ -38,5 +38,5 @@ add_dependencies(main hello_from_rust)
 # We link hello_from_rust to main.
 target_link_libraries(
     main 
-    ${CMAKE_SOURCE_DIR}/rust/target/release/libhello_from_rust.so
+    ${CMAKE_SOURCE_DIR}/build/rust-target/release/libhello_from_rust.so
 )
