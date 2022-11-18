@@ -25,7 +25,10 @@ Clone this repository and go to its directory. Then execute
 ```
 mkdir build
 cd build
-cmake ..
+cmake \
+-DCMAKE_PREFIX_PATH="~/repos/seastar/build/release;~/repos/seastar/build/release/_cooking/installed" \
+-DCMAKE_MODULE_PATH=~/repos/seastar/cmake \
+..
 make
 ./main
 ```

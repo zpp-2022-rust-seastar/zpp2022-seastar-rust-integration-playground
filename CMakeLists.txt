@@ -1,8 +1,12 @@
-project(Hello)
+project(TCP-Server)
 
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "-fcoroutines")
+
+find_package (Valgrind REQUIRED)
+find_package (Seastar REQUIRED)
 
 # We create a hello_from_cpp library that will be used by Rust.
 # This is a static library (.a file).
@@ -32,11 +36,14 @@ add_custom_target(
     DEPENDS hello_from_cpp
 )
 
-add_executable(main cpp/main.cc)
+add_executable(main
+    cpp/main.cc
+    cpp/server.cc
+)
 # We ensure that main is build after hello_from_rust.
 add_dependencies(main hello_from_rust)
 # We link hello_from_rust to main.
-target_link_libraries(
-    main 
+target_link_libraries(main 
+    Seastar::seastar
     ${CMAKE_SOURCE_DIR}/build/rust-target/release/libhello_from_rust.so
 )
