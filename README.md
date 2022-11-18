@@ -23,11 +23,12 @@ Library `hello_from_cpp` is static (`.a`) and `hello_from_rust` is dynamic (`.so
 
 Clone this repository and go to its directory. Then execute
 ```
+SEASTAR_PATH=<whatever this is for you>
 mkdir build
 cd build
 cmake \
--DCMAKE_PREFIX_PATH="~/repos/seastar/build/release;~/repos/seastar/build/release/_cooking/installed" \
--DCMAKE_MODULE_PATH=~/repos/seastar/cmake \
+-DCMAKE_PREFIX_PATH="${SEASTAR_PATH}/build/release;${SEASTAR_PATH}/build/release/_cooking/installed" \
+-DCMAKE_MODULE_PATH="${SEASTAR_PATH}/cmake" \
 ..
 make
 ./main
