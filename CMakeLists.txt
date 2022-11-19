@@ -9,25 +9,25 @@ find_package (Valgrind)
 find_package (Seastar REQUIRED)
 
 # Build interface used by Rust.
-add_library(hello_from_cpp STATIC cpp/hello_from_cpp.cc)
-target_compile_options(hello_from_cpp PRIVATE "-fPIC")
+add_library(rust_ffi STATIC server/rust_ffi/rust_ffi.cc)
+target_compile_options(rust_ffi PRIVATE "-fPIC")
 
 # Build Rust module.
 add_custom_target(
-    hello_from_rust
-    COMMAND cd ${CMAKE_SOURCE_DIR}/rust/ &&
-            HELLO_FROM_CPP_DIR=${CMAKE_CURRENT_BINARY_DIR}
-            cargo build --release --target-dir ${CMAKE_SOURCE_DIR}/build/rust-target
-    DEPENDS hello_from_cpp
+    rust_requests
+    COMMAND cd ${CMAKE_SOURCE_DIR}/rust_requests &&
+            RUST_FFI_DIR=${CMAKE_CURRENT_BINARY_DIR} cargo build
+            --release --target-dir ${CMAKE_SOURCE_DIR}/build/rust-target
+    DEPENDS rust_ffi
 )
 
 # Build server.
 add_executable(server
-    cpp/main.cc
-    cpp/server.cc
+    server/main.cc
+    server/server.cc
 )
-add_dependencies(server hello_from_rust)
+add_dependencies(server rust_requests)
 target_link_libraries(server
     Seastar::seastar
-    ${CMAKE_SOURCE_DIR}/build/rust-target/release/libhello_from_rust.so
+    ${CMAKE_SOURCE_DIR}/build/rust-target/release/librust_requests.so
 )
