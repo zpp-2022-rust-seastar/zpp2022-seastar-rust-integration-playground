@@ -5,10 +5,10 @@
 
 using namespace seastar;
 
-extern "C" void hello_from_rust(int x);
+extern "C" void do_requests_from_rust();
 
 int main(int ac, char** av) {
-    hello_from_rust(21);
+    do_requests_from_rust();
 
     app_template app;
     return app.run_deprecated(ac, av, [&] {
