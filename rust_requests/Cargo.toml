@@ -1,9 +1,9 @@
 [lib]
 crate-type = ["cdylib"]
-name = "hello_from_rust"
+name = "rust_requests"
 
 [package]
-name = "rust"
+name = "rust_requests"
 version = "0.1.0"
 edition = "2021"
 build = "build.rs"

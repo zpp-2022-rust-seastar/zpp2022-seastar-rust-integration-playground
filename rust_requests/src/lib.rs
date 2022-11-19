@@ -1,4 +1,4 @@
-#[link(name = "hello_from_cpp")]
+#[link(name = "rust_ffi")]
 extern {
     fn hello_from_cpp(x: std::ffi::c_int);
 }
