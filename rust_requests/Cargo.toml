@@ -1,5 +1,5 @@
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["staticlib"]
 name = "rust_requests"
 
 [package]

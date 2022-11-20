@@ -1,3 +1,4 @@
 rust_requests/target
 rust_requests/Cargo.lock
 build
+.vscode
