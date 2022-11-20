@@ -13,7 +13,6 @@ add_library(rust_ffi STATIC
     server/server.cc
     server/rust_ffi/rust_ffi.cc
 )
-target_compile_options(rust_ffi PRIVATE "-fPIC")
 target_link_libraries(rust_ffi Seastar::seastar)
 
 # Build Rust module.
