@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <regex>
 
 #include <seastar/core/coroutine.hh>
@@ -46,4 +47,7 @@ public:
 
         seastar::future<> write(const std::string& msg);
     };
+
+    // storage used by Rust
+    static std::unordered_map<std::string, std::string> rust_data;
 };
