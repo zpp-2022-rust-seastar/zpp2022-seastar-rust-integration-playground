@@ -1,27 +1,26 @@
 # zpp2022-seastar-rust-integration-playground
 
-## Hello example
-
 ### What is going on here?
-There are 3 parts of the program:
-- Function `main` (which is in C++) calls Rust `hello_from_rust` function.
-- Function `hello_from_rust` prints something and calls C++ function `hello_from_cpp`.
-- Function `hello_from_cpp` prints something.
+- Function `main` (from `server/main.cc`) calls Rust `do_requests_from_rust` function.
+- Function `do_requests_from_rust` performs some STORE/LOAD reqeusts. It uses functions from `server/rust_ffi/rust_ffi.h`.
+- Functions `store_from_rust`, `load_from_rust` (from `server/rust_ffi/rust_ffi.h`) use static hash map `tcp_server::rust_data`.
 
-So we go from C++ to Rust and then back to C++. We have 2 dependencies here:
-- `hello_from_rust` depends on `hello_from_cpp`,
-- `main` depends on `hello_from_rust`.
-
-These dependencies force us to build parts of our example in the following way:
-- `hello_from_cpp`
-- `hello_from_rust`
-- `main`
-
-Library `hello_from_cpp` is static (`.a`) and `hello_from_rust` is dynamic (`.so`). Why? Because currently this is the only way I can do it. There are probably many other ways to make it work.
+We create 3 targets (appearing in `CMakeLists.txt`):
+- `rust_ffi` - interface used by Rust module `rust_requests`,
+- `rust_requests` - Rust module used by `server` that performs some requests,
+- `server` - executable asking `rust_requests` to perform reqeusts and running main functionality of the server.
 
 ### Recommended use
 
 Clone this repository and go to its directory. Then execute
+```
+mkdir build
+cd build
+cmake ..
+make
+./main
+```
+If it does not work, this might help
 ```
 SEASTAR_PATH=<whatever this is for you>
 mkdir build
@@ -32,24 +31,4 @@ cmake \
 ..
 make
 ./main
-```
-
-### Manual compilation (for educational purposes)
-
-Create a C++ static library `hello_from_cpp` that will be used by Rust.
-```
-cd cpp
-g++ -c -fPIC hello_from_cpp.cc -o hello_from_cpp.o
-ar rcs libhello_from_cpp.a hello_from_cpp.o
-```
-Create a Rust dynamic library `hello_from_rust` that uses `hello_from_cpp` and will be used by `main`.
-```
-cd ../rust
-HELLO_FROM_CPP_DIR="$(pwd)/../cpp" cargo build --release
-```
-Compile and execute `main` that uses `hello_from_rust`.
-```
-cd ../cpp
-g++ main.cc -o main -lhello_from_rust -L../rust/target/release
-LD_LIBRARY_PATH=../rust/target/release ./main
 ```
