@@ -21,7 +21,7 @@ extern "C" char * load_from_rust(const char *key) {
     }
 
     std::string value = tcp_server::rust_data[std::string(key)];
-    return strdup(value.c_str());
+    return &value[0];
 }
 
 extern "C" void free_from_rust(char *ptr) {

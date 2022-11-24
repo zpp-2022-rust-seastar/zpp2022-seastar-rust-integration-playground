@@ -13,7 +13,7 @@ extern {
 fn do_load_from_rust(key: &CString) {
     unsafe {
         let loaded_value_ptr = load_from_rust(key.as_ptr());
-        if loaded_value_ptr as usize == 0 { // loaded_value_ptr == NULL
+        if loaded_value_ptr.is_null() { 
             println!("NOTFOUND$");
         } else {
             let loaded_value = CStr::from_ptr(loaded_value_ptr).to_str().unwrap();

@@ -100,7 +100,7 @@ future<> tcp_server::connection::process() {
 
 future<std::string> tcp_server::connection::read_once() {
     if (_read_buf.eof()) {
-        co_return co_await make_ready_future<std::string>();
+        co_return std::string();
     }
 
     std::string buffer;
