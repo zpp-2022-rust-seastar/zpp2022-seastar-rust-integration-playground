@@ -10,7 +10,7 @@ mod ffi {
     }
 
     unsafe extern "C++" {
-        include!("ffi/src/cpp_part/line.h");
+        include!("rust/../server/tasks/line.h");
 
         type Line;
 

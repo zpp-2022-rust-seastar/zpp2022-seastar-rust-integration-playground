@@ -2,7 +2,7 @@
 #include <seastar/core/app-template.hh>
 
 #include "line.h"
-#include "ffi/src/lib.rs.h"
+#include "rust/src/lib.rs.h"
 
 const double EPSILON = 1e-5;
 

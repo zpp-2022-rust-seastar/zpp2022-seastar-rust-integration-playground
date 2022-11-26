@@ -3,7 +3,7 @@
 #include <seastar/net/api.hh>
 
 #include "server.hh"
-#include "ffi/src/lib.rs.h"
+#include "rust/src/lib.rs.h"
 #include "rust/cxx.h"
 
 using namespace seastar;

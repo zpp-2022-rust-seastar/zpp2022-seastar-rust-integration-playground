@@ -1,9 +1,9 @@
 [lib]
 crate-type = ["staticlib"]
-name = "ffi"
+name = "rust"
 
 [package]
-name = "ffi"
+name = "rust"
 version = "0.1.0"
 edition = "2021"
 
