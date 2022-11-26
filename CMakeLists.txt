@@ -3,7 +3,6 @@ project(TCP-Server)
 cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "-fcoroutines")
 
 find_package(Valgrind)
 find_package(Seastar REQUIRED)
@@ -22,7 +21,7 @@ add_executable(
     server
     server/main.cc
     server/server.cc
-    server/tasks/line.cc
+    server/tasks/store_task.cc
 )
 add_dependencies(server rust)
 target_link_libraries(
