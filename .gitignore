@@ -1,4 +1,4 @@
-rust_requests/target
-rust_requests/Cargo.lock
+*/target
+*/Cargo.lock
 build
 .vscode

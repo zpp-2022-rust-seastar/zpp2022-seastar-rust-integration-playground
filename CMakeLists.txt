@@ -7,30 +7,21 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(Valgrind)
 find_package(Seastar REQUIRED)
 
-set(RUST_TARGET_DIR ${CMAKE_CURRENT_BINARY_DIR}/ffi-target)
-
-# Build code using Seastar that ffi depends on.
-add_library(
-    seastar_ffi STATIC
-    ffi/src/cpp_part/seastar_ffi.cc
-)
-target_link_libraries(seastar_ffi Seastar::seastar)
+set(RUST_TARGET_DIR ${CMAKE_CURRENT_BINARY_DIR}/ffi)
 
 # Build ffi.
 add_custom_target(
     ffi
     COMMAND cd ${CMAKE_SOURCE_DIR}/ffi &&
-            BUILD_DIR=${CMAKE_CURRENT_BINARY_DIR} cargo build
-            --target-dir ${RUST_TARGET_DIR}
-    DEPENDS seastar_ffi
+            cargo build --target-dir ${RUST_TARGET_DIR}
 )
 
 # Build server.
 add_executable(
     server
+    ffi/src/cpp_part/line.cc
     server/main.cc
     server/server.cc
-    ffi/src/cpp_part/seastar_ffi.cc
 )
 add_dependencies(server ffi)
 target_link_libraries(
