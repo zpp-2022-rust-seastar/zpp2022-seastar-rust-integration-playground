@@ -13,7 +13,7 @@ namespace rust {
 
         virtual void run_and_dispose() noexcept;
 
-        StoreFuture& get_fut();
+        StoreFuture& get_store_fut();
 
         StoreTask();
 
