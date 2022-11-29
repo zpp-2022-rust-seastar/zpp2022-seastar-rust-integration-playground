@@ -3,4 +3,4 @@
 
 namespace rust {
 
-}
+} // namespace rust

@@ -1,28 +1,32 @@
 #pragma once
 
+#include <seastar/core/future.hh>
+
 #include "rust/cxx.h"
 
 namespace rust {
-    struct StoreFuture;
 
-    struct StoreTask {
-        rust::StoreFuture* _rfut;
-        bool _scheduled = true;
+struct StoreFuture;
 
-        void schedule_me();
+struct StoreTask : public seastar::continuation_base_with_promise<seastar::promise<>, void> {
+    rust::StoreFuture* _rfut;
+    bool _scheduled = true;
 
-        virtual void run_and_dispose() noexcept;
+    void schedule_me();
 
-        StoreFuture& get_store_fut();
+    virtual void run_and_dispose() noexcept;
 
-        StoreTask();
+    StoreFuture& get_store_fut();
 
-        virtual ~StoreTask();
+    StoreTask();
 
-        //seastar::future<uint32_t> get_future();
-    };
+    virtual ~StoreTask();
 
-    void wake_store_task(StoreTask& task);
+    seastar::future<> get_future();
+};
 
-    void schedule_callback_after_one_second(rust::Fn<void(StoreFuture*)> fn, StoreFuture* data);
-}
+void wake_store_task(StoreTask& task);
+
+void schedule_callback_after_one_second(rust::Fn<void(StoreFuture*)> fn, StoreFuture* data);
+
+} // namespace rust
