@@ -24,7 +24,7 @@ impl Future for StoreFuture {
     }
 }
 
-pub fn poll_store_future(task: Pin<&mut super::ffi::StoreTask>, _out: &mut String) -> bool {
+pub fn poll_store_future(task: Pin<&mut super::ffi::StoreTask>) -> bool {
     let waker = unsafe {
         Waker::from_raw(RawWaker::new(task.as_ref().get_ref() as *const super::ffi::StoreTask as *const (), &WAKER_VTABLE))
     };

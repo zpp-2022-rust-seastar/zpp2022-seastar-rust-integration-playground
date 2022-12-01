@@ -6,6 +6,7 @@
 namespace rust {
 
 struct StoreFuture;
+struct RustStorage;
 
 struct StoreTask : public seastar::continuation_base_with_promise<seastar::promise<>, void> {
     rust::StoreFuture* _rfut;
@@ -17,7 +18,7 @@ struct StoreTask : public seastar::continuation_base_with_promise<seastar::promi
 
     StoreFuture& get_store_fut();
 
-    StoreTask(rust::RustStorage* rust_storage, std::string& key, std::string& val);
+    StoreTask(RustStorage* rust_storage, std::string& key, std::string& val);
 
     virtual ~StoreTask();
 

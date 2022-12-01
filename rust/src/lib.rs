@@ -24,7 +24,7 @@ mod ffi {
         unsafe fn delete_rust_storage(rs: *mut RustStorage);
 
         type StoreFuture;
-        fn poll_store_future(task: Pin<&mut StoreTask>, out: &mut String) -> bool;
+        fn poll_store_future(task: Pin<&mut StoreTask>) -> bool;
         unsafe fn create_store_future(storage: *mut RustStorage, key: String, value: String) -> *mut StoreFuture;
         unsafe fn delete_store_future(fut: *mut StoreFuture);
 

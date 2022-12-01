@@ -6,6 +6,7 @@
 namespace rust {
 
 struct LoadFuture;
+struct RustStorage;
 
 struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise<std::string>, std::string> {
     rust::LoadFuture* _rfut;
@@ -17,7 +18,7 @@ struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise
 
     LoadFuture& get_load_fut();
 
-    LoadTask(rust::RustStorage* rust_storage, std::string& key);
+    LoadTask(RustStorage* rust_storage, std::string& key);
 
     virtual ~LoadTask();
 
