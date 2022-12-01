@@ -21,7 +21,6 @@ add_executable(
     server
     server/main.cc
     server/server.cc
-    server/tasks/store_task.cc
 )
 add_dependencies(server rust)
 target_link_libraries(
