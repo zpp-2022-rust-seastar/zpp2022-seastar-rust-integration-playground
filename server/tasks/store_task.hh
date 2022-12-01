@@ -1,7 +1,6 @@
 #pragma once
 
 #include <seastar/core/future.hh>
-
 #include "rust/cxx.h"
 
 namespace rust {
@@ -18,7 +17,7 @@ struct StoreTask : public seastar::continuation_base_with_promise<seastar::promi
 
     StoreFuture& get_store_fut();
 
-    StoreTask();
+    StoreTask(rust::RustStorage* rust_storage, std::string& key, std::string& val);
 
     virtual ~StoreTask();
 

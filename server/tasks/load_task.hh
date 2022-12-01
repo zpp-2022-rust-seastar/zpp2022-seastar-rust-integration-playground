@@ -1,28 +1,31 @@
 #pragma once
 
+#include <seastar/core/future.hh>
 #include "rust/cxx.h"
 
 namespace rust {
-    struct LoadFuture;
 
-    struct LoadTask {
-        rust::LoadFuture* _rfut;
-        bool _scheduled = true;
+struct LoadFuture;
 
-        void schedule_me();
+struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise<std::string>, std::string> {
+    rust::LoadFuture* _rfut;
+    bool _scheduled = true;
 
-        virtual void run_and_dispose() noexcept;
+    void schedule_me();
 
-        LoadFuture& get_load_fut();
+    virtual void run_and_dispose() noexcept;
 
-        LoadTask();
+    LoadFuture& get_load_fut();
 
-        virtual ~LoadTask();
+    LoadTask(rust::RustStorage* rust_storage, std::string& key);
 
-        //seastar::future<uint32_t> get_future();
-    };
+    virtual ~LoadTask();
 
-    void wake_load_task(LoadTask& task);
+    seastar::future<std::string> get_future();
+};
 
-    void schedule_callback_after_one_second(rust::Fn<void(LoadFuture*)> fn, LoadFuture* data);
-}
+void wake_load_task(LoadTask& task);
+
+void schedule_callback_after_one_second(rust::Fn<void(LoadFuture*)> fn, LoadFuture* data);
+} // namespace rust
+

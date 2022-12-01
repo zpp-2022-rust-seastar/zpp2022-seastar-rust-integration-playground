@@ -30,12 +30,7 @@ pub fn poll_store_future(task: Pin<&mut super::ffi::StoreTask>, _out: &mut Strin
     };
     let fut = task.get_store_fut();
     let mut ctx = Context::from_waker(&waker);
-    match Pin::new(fut).poll(&mut ctx) {
-        Poll::Pending => false,
-        Poll::Ready(_) => {
-            true
-        },
-    }
+    matches!(Pin::new(fut).poll(&mut ctx), Poll::Ready(_))
 }
 
 pub fn create_store_future(storage: *mut RustStorage, key: String, value: String) -> *mut StoreFuture {

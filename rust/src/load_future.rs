@@ -16,12 +16,12 @@ pub struct LoadFuture {
 impl Future for LoadFuture {
     type Output = String;
     fn poll(mut self: Pin<&mut Self>, _ctx: &mut Context<'_>) -> Poll<Self::Output> {
-        let value;
+        let value = 
         unsafe {
-            value = (*self.storage).load(&self.key[..]).as_ref();
-        }
+            (*self.storage).load(&self.key[..]).as_ref()
+        };
         Poll::Ready(match value {
-            None => String::new(), // TO FIX: this should be None/null if the value is not found
+            None => String::new(), // TO FIX: this should be null if the value is not found
             Some(v) => String::from(v),
         })
     }

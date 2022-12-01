@@ -2,7 +2,6 @@ mod rust_storage;
 
 use rust_storage::{create_rust_storage, delete_rust_storage};
 use rust_storage::RustStorage;
-// use rust_storage::RustStorage::{hello, store, load};
 
 mod waker;
 
@@ -21,9 +20,6 @@ mod ffi {
 
     extern "Rust" {
         type RustStorage;
-        // pub fn hello(storage: &RustStorage);
-        // pub fn store(storage: &mut RustStorage, key: &str, val: &str);
-        // pub fn load(storage: &RustStorage, key: &str) -> *const String;
         fn create_rust_storage() -> *mut RustStorage;
         unsafe fn delete_rust_storage(rs: *mut RustStorage);
 

@@ -5,10 +5,6 @@ pub struct RustStorage {
 }
 
 impl RustStorage {
-    pub fn hello(&self) {
-        println!("Hello from RustStorage!");
-    }
-
     pub fn store(&mut self, key: &str, val: &str) {
         self.dict.insert(key.to_string(), val.to_string());
     }
