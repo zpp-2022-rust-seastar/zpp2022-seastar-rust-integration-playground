@@ -1,24 +1,14 @@
 # zpp2022-seastar-rust-integration-playground
 
-### Recommended use
-
-Clone this repository and go to its directory. Then execute
+## Use
 ```
-mkdir build
-cd build
-cmake ..
-make
-./main
-```
-If it does not work, this might help
-```
-SEASTAR_PATH=<whatever this is for you>
-mkdir build
-cd build
-cmake \
--DCMAKE_PREFIX_PATH="${SEASTAR_PATH}/build/release;${SEASTAR_PATH}/build/release/_cooking/installed" \
+SEASTAR_PATH=...
+cmake -B ./build \
 -DCMAKE_MODULE_PATH="${SEASTAR_PATH}/cmake" \
-..
-make
-./main
+-DCMAKE_PREFIX_PATH="${SEASTAR_PATH}/build/release;${SEASTAR_PATH}/build/release/_cooking/installed"
+cmake --build ./build
+./build/server
+
 ```
+
+`DCMAKE_PREFIX_PATH` is not needed if you have seastar installed.
