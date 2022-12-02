@@ -21,9 +21,8 @@ jobs:
         git clone https://github.com/scylladb/seastar.git
         cd seastar/
         sudo ./install-dependencies.sh
-        ./configure.py --mode=release
+        ./configure.py --mode=release --without-tests --prefix=/usr/local
         ninja -C build/release
-        ./configure.py --mode=release --prefix=/usr/local
         sudo ninja -C build/release install
 
     - name: Configure CMake
