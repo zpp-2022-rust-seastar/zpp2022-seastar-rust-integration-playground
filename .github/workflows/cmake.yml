@@ -23,8 +23,8 @@ jobs:
         sudo ./install-dependencies.sh
         ./configure.py --mode=release
         ninja -C build/release
-        sudo ./configure.py --mode=release --prefix=/usr/local
-        ninja -C build/release install
+        ./configure.py --mode=release --prefix=/usr/local
+        sudo ninja -C build/release install
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
