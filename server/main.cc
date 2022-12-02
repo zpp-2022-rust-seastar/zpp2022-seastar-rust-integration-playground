@@ -5,6 +5,7 @@
 #include "server.hh"
 
 using namespace seastar;
+using namespace rust;
 
 int main(int ac, char** av) {
     app_template app;

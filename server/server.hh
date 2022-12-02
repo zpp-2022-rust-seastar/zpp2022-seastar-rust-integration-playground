@@ -1,5 +1,7 @@
 #pragma once
 
+#include "rust/src/lib.rs.h"
+
 #include <iostream>
 #include <map>
 #include <unordered_map>
@@ -11,6 +13,10 @@
 #include <seastar/core/sharded.hh>
 #include <seastar/core/temporary_buffer.hh>
 
+namespace rust {
+
+struct RustStorage;
+
 const std::string done = "DONE$";
 const std::string found = "FOUND$";
 const std::string not_found = "NOTFOUND$";
@@ -19,7 +25,7 @@ const std::regex load_reg("LOAD\\$[a-z]*\\$");
 
 class tcp_server : public seastar::peering_sharded_service<tcp_server> {
     seastar::server_socket _tcp_listener;
-    std::map<std::string, std::string> _data;
+    RustStorage* _rust_storage;
 public:
     seastar::future<> listen(seastar::ipv4_addr addr);
 
@@ -29,7 +35,7 @@ public:
 
     seastar::future<> store(const std::string& key, const std::string& value);
 
-    seastar::future<std::optional<std::string>> load(const std::string& key);
+    seastar::future<std::string> load(const std::string& key);
 
     class connection {
         tcp_server& _server;
@@ -51,3 +57,5 @@ public:
     // storage used by Rust
     static std::unordered_map<std::string, std::string> rust_data;
 };
+
+} // namespace rust

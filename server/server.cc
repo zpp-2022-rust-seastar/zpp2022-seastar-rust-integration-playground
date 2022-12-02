@@ -1,5 +1,7 @@
 #include "server.hh"
+#include "rust/src/lib.rs.h"
 
+namespace rust {
 using namespace seastar;
 
 static uint16_t calc_hash(const std::string& s) {
@@ -50,15 +52,18 @@ void tcp_server::do_accept(server_socket& listener) {
 }
 
 future<> tcp_server::store(const std::string& key, const std::string& value) {
-    _data[key] = value;
-    co_return;
+    auto* t = new StoreTask(_rust_storage, key, value);
+    future<> f = t->get_future();
+    seastar::schedule(t);
+    return f;
 }
 
-future<std::optional<std::string>> tcp_server::load(const std::string& key) {
-    if (_data.find(key) != _data.end()) {
-        co_return _data[key];
-    }
-    co_return std::nullopt;
+//TODO: make this return optional<string>
+future<std::string> tcp_server::load(const std::string& key) {
+    auto* t = new LoadTask(_rust_storage, key);
+    future<std::string> f = t->get_future();
+    seastar::schedule(t);
+    return f;
 }
 
 tcp_server::connection::connection(tcp_server& server, connected_socket&& fd, socket_address addr)
@@ -91,7 +96,8 @@ future<> tcp_server::connection::process() {
             auto res = co_await _server.container().invoke_on(which, [key] (auto& tcp_server) {
                 return tcp_server.load(key);
             });
-            res.has_value() ? co_await write(found + res.value() + '$') : co_await write(not_found);
+            res.empty() ? co_await write(found + res + '$') : co_await write(not_found);
+            //res.has_value() ? co_await write(found + res.value() + '$') : co_await write(not_found);
         } else {
             co_return;
         }
@@ -127,3 +133,5 @@ future<> tcp_server::connection::write(const std::string& msg) {
     co_await _write_buf.write(msg);
     co_await _write_buf.flush();
 }
+
+} // namespace rust

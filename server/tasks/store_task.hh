@@ -9,7 +9,7 @@ struct StoreFuture;
 struct RustStorage;
 
 struct StoreTask : public seastar::continuation_base_with_promise<seastar::promise<>, void> {
-    rust::StoreFuture* _rfut;
+    StoreFuture* _rfut;
     bool _scheduled = true;
 
     void schedule_me();

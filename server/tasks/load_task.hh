@@ -9,7 +9,7 @@ struct LoadFuture;
 struct RustStorage;
 
 struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise<std::string>, std::string> {
-    rust::LoadFuture* _rfut;
+    LoadFuture* _rfut;
     bool _scheduled = true;
 
     void schedule_me();
