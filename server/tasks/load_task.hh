@@ -18,7 +18,7 @@ struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise
 
     LoadFuture& get_load_fut();
 
-    LoadTask(RustStorage* rust_storage, std::string& key);
+    LoadTask(RustStorage* rust_storage, const std::string& key);
 
     virtual ~LoadTask();
 
@@ -28,5 +28,5 @@ struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise
 void wake_load_task(LoadTask& task);
 
 void schedule_callback_after_one_second(rust::Fn<void(LoadFuture*)> fn, LoadFuture* data);
-} // namespace rust
 
+} // namespace rust

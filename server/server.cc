@@ -1,8 +1,8 @@
 #include "server.hh"
-#include "rust/src/lib.rs.h"
+
+using namespace seastar;
 
 namespace rust {
-using namespace seastar;
 
 static uint16_t calc_hash(const std::string& s) {
     uint16_t res = 0;
@@ -12,8 +12,9 @@ static uint16_t calc_hash(const std::string& s) {
     return res % smp::count;
 }
 
-std::unordered_map<std::string, std::string> tcp_server::rust_data =
-    std::unordered_map<std::string, std::string>();
+tcp_server::tcp_server() : peering_sharded_service<tcp_server>() {
+    _rust_storage = create_rust_storage();
+}
 
 future<> tcp_server::listen(ipv4_addr addr) {
     listen_options lo;
@@ -96,7 +97,8 @@ future<> tcp_server::connection::process() {
             auto res = co_await _server.container().invoke_on(which, [key] (auto& tcp_server) {
                 return tcp_server.load(key);
             });
-            res.empty() ? co_await write(found + res + '$') : co_await write(not_found);
+            std::cout << "res:" << res << "\n";
+            !res.empty() ? co_await write(found + res + '$') : co_await write(not_found);
             //res.has_value() ? co_await write(found + res.value() + '$') : co_await write(not_found);
         } else {
             co_return;

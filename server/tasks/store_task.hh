@@ -18,7 +18,7 @@ struct StoreTask : public seastar::continuation_base_with_promise<seastar::promi
 
     StoreFuture& get_store_fut();
 
-    StoreTask(RustStorage* rust_storage, std::string& key, std::string& val);
+    StoreTask(RustStorage* rust_storage, const std::string& key, const std::string& val);
 
     virtual ~StoreTask();
 

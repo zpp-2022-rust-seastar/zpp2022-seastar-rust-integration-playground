@@ -27,6 +27,8 @@ class tcp_server : public seastar::peering_sharded_service<tcp_server> {
     seastar::server_socket _tcp_listener;
     RustStorage* _rust_storage;
 public:
+    tcp_server();
+
     seastar::future<> listen(seastar::ipv4_addr addr);
 
     seastar::future<> stop();
@@ -53,9 +55,6 @@ public:
 
         seastar::future<> write(const std::string& msg);
     };
-
-    // storage used by Rust
-    static std::unordered_map<std::string, std::string> rust_data;
 };
 
 } // namespace rust

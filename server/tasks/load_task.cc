@@ -24,9 +24,9 @@ LoadFuture& LoadTask::get_load_fut() {
     return *_rfut;
 }
 
-LoadTask::LoadTask(RustStorage* rust_storage, std::string& key) : continuation_base_with_promise(seastar::promise<std::string>()) {
+LoadTask::LoadTask(RustStorage* rust_storage, const std::string& key) : continuation_base_with_promise(seastar::promise<std::string>()) {
     printf("Here I am: %p\n", this);
-    _rfut = rust::create_load_future(rust_storage, key);
+    _rfut = rust::create_load_future(rust_storage, rust::String(key));
 }
 
 LoadTask::~LoadTask() {
@@ -37,7 +37,7 @@ seastar::future<std::string> LoadTask::get_future() {
     return _pr.get_future();
 }
 
-void wake_rust_task(LoadTask& task) {
+void wake_load_task(LoadTask& task) {
     printf("Task: %p\n", &task);
     task.schedule_me();
 }
