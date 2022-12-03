@@ -5,7 +5,7 @@ use std::pin::Pin;
 use crate::ffi::schedule_callback_for_load_future_after_one_second;
 use crate::not_found_constant;
 use crate::rust_storage::RustStorage;
-use crate::waker::WAKER_VTABLE;
+use crate::waker::LOAD_WAKER_VTABLE;
 
 pub struct LoadFuture {
     running: bool,
@@ -51,7 +51,7 @@ impl Future for LoadFuture {
 
 pub fn poll_load_future(task: Pin<&mut super::ffi::LoadTask>, out: &mut String) -> bool {
     let waker = unsafe {
-        Waker::from_raw(RawWaker::new(task.as_ref().get_ref() as *const super::ffi::LoadTask as *const (), &WAKER_VTABLE))
+        Waker::from_raw(RawWaker::new(task.as_ref().get_ref() as *const super::ffi::LoadTask as *const (), &LOAD_WAKER_VTABLE))
     };
     let fut = task.get_load_fut();
     let mut ctx = Context::from_waker(&waker);

@@ -15,7 +15,7 @@ void LoadTask::run_and_dispose() noexcept {
     _scheduled = false;
     String out;
     if (poll_load_future(*this, out)) {
-        if (out == not_found_constant()) {
+        if (out != not_found_constant()) {
             this->_pr.set_value(out);
         } else {
             this->_pr.set_value(std::nullopt);

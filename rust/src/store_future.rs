@@ -4,7 +4,7 @@ use std::pin::Pin;
 
 use crate::ffi::schedule_callback_for_store_future_after_one_second;
 use crate::rust_storage::RustStorage;
-use crate::waker::WAKER_VTABLE;
+use crate::waker::STORE_WAKER_VTABLE;
 
 pub struct StoreFuture {
     running: bool,
@@ -47,7 +47,7 @@ impl Future for StoreFuture {
 
 pub fn poll_store_future(task: Pin<&mut super::ffi::StoreTask>) -> bool {
     let waker = unsafe {
-        Waker::from_raw(RawWaker::new(task.as_ref().get_ref() as *const super::ffi::StoreTask as *const (), &WAKER_VTABLE))
+        Waker::from_raw(RawWaker::new(task.as_ref().get_ref() as *const super::ffi::StoreTask as *const (), &STORE_WAKER_VTABLE))
     };
     let fut = task.get_store_fut();
     let mut ctx = Context::from_waker(&waker);
