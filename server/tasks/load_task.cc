@@ -13,9 +13,13 @@ void LoadTask::schedule_me() {
 
 void LoadTask::run_and_dispose() noexcept {
     _scheduled = false;
-    rust::String out;
-    if (rust::poll_load_future(*this, out)) {
-        this->_pr.set_value(out);
+    String out;
+    if (poll_load_future(*this, out)) {
+        if (out == not_found_constant()) {
+            this->_pr.set_value(out);
+        } else {
+            this->_pr.set_value(std::nullopt);
+        }
         delete this;
     }
 }
@@ -24,16 +28,16 @@ LoadFuture& LoadTask::get_load_fut() {
     return *_rfut;
 }
 
-LoadTask::LoadTask(RustStorage* rust_storage, const std::string& key) : continuation_base_with_promise(seastar::promise<std::string>()) {
+LoadTask::LoadTask(RustStorage* rust_storage, const std::string& key) : continuation_base_with_promise(seastar::promise<std::optional<std::string>>()) {
     printf("Here I am: %p\n", this);
-    _rfut = rust::create_load_future(rust_storage, rust::String(key));
+    _rfut = create_load_future(rust_storage, String(key));
 }
 
 LoadTask::~LoadTask() {
-    rust::delete_load_future(_rfut);
+    delete_load_future(_rfut);
 }
 
-seastar::future<std::string> LoadTask::get_future() {
+seastar::future<std::optional<std::string>> LoadTask::get_future() {
     return _pr.get_future();
 }
 
@@ -42,7 +46,7 @@ void wake_load_task(LoadTask& task) {
     task.schedule_me();
 }
 
-void schedule_callback_after_one_second(rust::Fn<void(LoadFuture*)> fn, LoadFuture* data) {
+void schedule_callback_after_one_second(Fn<void(LoadFuture*)> fn, LoadFuture* data) {
     (void)seastar::sleep(std::chrono::seconds(1)).then([fn, data] {
         fn(data);
     });

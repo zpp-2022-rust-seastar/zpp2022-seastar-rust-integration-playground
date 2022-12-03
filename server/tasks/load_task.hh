@@ -8,7 +8,7 @@ namespace rust {
 struct LoadFuture;
 struct RustStorage;
 
-struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise<std::string>, std::string> {
+struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise<std::optional<std::string>>, std::optional<std::string>> {
     LoadFuture* _rfut;
     bool _scheduled = true;
 
@@ -22,7 +22,7 @@ struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise
 
     virtual ~LoadTask();
 
-    seastar::future<std::string> get_future();
+    seastar::future<std::optional<std::string>> get_future();
 };
 
 void wake_load_task(LoadTask& task);

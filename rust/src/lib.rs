@@ -32,6 +32,8 @@ mod ffi {
         fn poll_load_future(task: Pin<&mut LoadTask>, out: &mut String) -> bool;
         unsafe fn create_load_future(storage: *mut RustStorage, key: String) -> *mut LoadFuture;
         unsafe fn delete_load_future(fut: *mut LoadFuture);
+
+        fn not_found_constant() -> String;
     }
     
     extern "C++" {
@@ -53,3 +55,8 @@ mod ffi {
     }
 }
 
+const NOT_FOUND: &str = "$NOT_FOUND";
+
+fn not_found_constant() -> String {
+    NOT_FOUND.to_string()
+}

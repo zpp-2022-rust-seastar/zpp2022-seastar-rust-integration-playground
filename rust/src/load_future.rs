@@ -2,6 +2,7 @@ use std::future::Future;
 use std::task::{Context, Poll, Waker, RawWaker};
 use std::pin::Pin;
 
+use crate::not_found_constant;
 use crate::rust_storage::RustStorage;
 use crate::waker::WAKER_VTABLE;
 
@@ -21,7 +22,7 @@ impl Future for LoadFuture {
             (*self.storage).load(&self.key[..]).as_ref()
         };
         Poll::Ready(match value {
-            None => String::new(), // TO FIX: this should be null if the value is not found
+            None => not_found_constant(),
             Some(v) => String::from(v),
         })
     }

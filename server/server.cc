@@ -59,10 +59,9 @@ future<> tcp_server::store(const std::string& key, const std::string& value) {
     return f;
 }
 
-//TODO: make this return optional<string>
-future<std::string> tcp_server::load(const std::string& key) {
+future<std::optional<std::string>> tcp_server::load(const std::string& key) {
     auto* t = new LoadTask(_rust_storage, key);
-    future<std::string> f = t->get_future();
+    future<std::optional<std::string>> f = t->get_future();
     seastar::schedule(t);
     return f;
 }
@@ -97,9 +96,7 @@ future<> tcp_server::connection::process() {
             auto res = co_await _server.container().invoke_on(which, [key] (auto& tcp_server) {
                 return tcp_server.load(key);
             });
-            std::cout << "res:" << res << "\n";
-            !res.empty() ? co_await write(found + res + '$') : co_await write(not_found);
-            //res.has_value() ? co_await write(found + res.value() + '$') : co_await write(not_found);
+            res.has_value() ? co_await write(found + res.value() + '$') : co_await write(not_found);
         } else {
             co_return;
         }

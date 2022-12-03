@@ -13,7 +13,7 @@ void StoreTask::schedule_me() {
 
 void StoreTask::run_and_dispose() noexcept {
     _scheduled = false;
-    if (rust::poll_store_future(*this)) {
+    if (poll_store_future(*this)) {
         this->_pr.set_value();
         delete this;
     }
@@ -25,11 +25,11 @@ StoreFuture& StoreTask::get_store_fut() {
 
 StoreTask::StoreTask(RustStorage* rust_storage, const std::string& key, const std::string& val) : continuation_base_with_promise(seastar::promise<>()) {
     printf("Here I am: %p\n", this);
-    _rfut = rust::create_store_future(rust_storage, rust::String(key), rust::String(val));
+    _rfut = create_store_future(rust_storage, String(key), String(val));
 }
 
 StoreTask::~StoreTask() {
-    rust::delete_store_future(_rfut);
+    delete_store_future(_rfut);
 }
 
 seastar::future<> StoreTask::get_future() {
@@ -41,7 +41,7 @@ void wake_store_task(StoreTask& task) {
     task.schedule_me();
 }
 
-void schedule_callback_after_one_second(rust::Fn<void(StoreFuture*)> fn, StoreFuture* data) {
+void schedule_callback_after_one_second(Fn<void(StoreFuture*)> fn, StoreFuture* data) {
     (void)seastar::sleep(std::chrono::seconds(1)).then([fn, data] {
         fn(data);
     });

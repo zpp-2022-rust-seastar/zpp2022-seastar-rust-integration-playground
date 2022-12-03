@@ -37,7 +37,7 @@ public:
 
     seastar::future<> store(const std::string& key, const std::string& value);
 
-    seastar::future<std::string> load(const std::string& key);
+    seastar::future<std::optional<std::string>> load(const std::string& key);
 
     class connection {
         tcp_server& _server;
