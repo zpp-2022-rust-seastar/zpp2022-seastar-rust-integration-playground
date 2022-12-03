@@ -2,6 +2,7 @@ use std::future::Future;
 use std::task::{Context, Poll, Waker, RawWaker};
 use std::pin::Pin;
 
+use crate::ffi::schedule_callback_for_store_future_after_one_second;
 use crate::rust_storage::RustStorage;
 use crate::waker::WAKER_VTABLE;
 
@@ -16,11 +17,31 @@ pub struct StoreFuture {
 
 impl Future for StoreFuture {
     type Output = ();
-    fn poll(mut self: Pin<&mut Self>, _ctx: &mut Context<'_>) -> Poll<Self::Output> {
-        unsafe {
-            (*self.storage).store(&self.key[..], &self.value[..]);
+    fn poll(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<Self::Output> {
+        if !self.running {
+            self.as_mut().running = true;
+            self.as_mut().waker = Some(ctx.waker().clone());
+            fn callback(x: *mut StoreFuture) {
+                println!("X is: {:p}", x);
+                unsafe {
+                    (*x).done = true;
+                    (*x).waker.take().map(|w| w.wake());
+                }
+            }
+            unsafe {
+                schedule_callback_for_store_future_after_one_second(callback, self.as_ref().get_ref() as *const StoreFuture as *mut StoreFuture);
+            }
+            return Poll::Pending;
         }
-        Poll::Ready(())
+
+        if self.done {
+            unsafe {
+                (*self.storage).store(&self.key[..], &self.value[..]);
+                Poll::Ready(())
+            }
+        } else {
+            Poll::Pending
+        }        
     }
 }
 

@@ -27,6 +27,6 @@ struct StoreTask : public seastar::continuation_base_with_promise<seastar::promi
 
 void wake_store_task(StoreTask& task);
 
-void schedule_callback_after_one_second(rust::Fn<void(StoreFuture*)> fn, StoreFuture* data);
+void schedule_callback_for_store_future_after_one_second(rust::Fn<void(StoreFuture*)> fn, StoreFuture* data);
 
 } // namespace rust

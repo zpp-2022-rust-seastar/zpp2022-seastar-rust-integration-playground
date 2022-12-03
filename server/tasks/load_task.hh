@@ -27,6 +27,6 @@ struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise
 
 void wake_load_task(LoadTask& task);
 
-void schedule_callback_after_one_second(rust::Fn<void(LoadFuture*)> fn, LoadFuture* data);
+void schedule_callback_for_load_future_after_one_second(rust::Fn<void(LoadFuture*)> fn, LoadFuture* data);
 
 } // namespace rust

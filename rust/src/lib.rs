@@ -46,12 +46,12 @@ mod ffi {
         include!("rust/../server/tasks/load_task.hh");
     
         fn get_store_fut(self: Pin<&mut StoreTask>) -> &mut StoreFuture;
-
         fn wake_store_task(task: Pin<&mut StoreTask>);
+        unsafe fn schedule_callback_for_store_future_after_one_second(cb: unsafe fn(*mut StoreFuture), data: *mut StoreFuture);
 
         fn get_load_fut(self: Pin<&mut LoadTask>) -> &mut LoadFuture;
-
         fn wake_load_task(task: Pin<&mut LoadTask>);
+        unsafe fn schedule_callback_for_load_future_after_one_second(cb: unsafe fn(*mut LoadFuture), data: *mut LoadFuture);
     }
 }
 

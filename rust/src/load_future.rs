@@ -2,6 +2,7 @@ use std::future::Future;
 use std::task::{Context, Poll, Waker, RawWaker};
 use std::pin::Pin;
 
+use crate::ffi::schedule_callback_for_load_future_after_one_second;
 use crate::not_found_constant;
 use crate::rust_storage::RustStorage;
 use crate::waker::WAKER_VTABLE;
@@ -16,15 +17,35 @@ pub struct LoadFuture {
 
 impl Future for LoadFuture {
     type Output = String;
-    fn poll(mut self: Pin<&mut Self>, _ctx: &mut Context<'_>) -> Poll<Self::Output> {
-        let value = 
-        unsafe {
-            (*self.storage).load(&self.key[..]).as_ref()
-        };
-        Poll::Ready(match value {
-            None => not_found_constant(),
-            Some(v) => String::from(v),
-        })
+    fn poll(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<Self::Output> {
+        if !self.running {
+            self.as_mut().running = true;
+            self.as_mut().waker = Some(ctx.waker().clone());
+            fn callback(x: *mut LoadFuture) {
+                println!("X is: {:p}", x);
+                unsafe {
+                    (*x).done = true;
+                    (*x).waker.take().map(|w| w.wake());
+                }
+            }
+            unsafe {
+                schedule_callback_for_load_future_after_one_second(callback, self.as_ref().get_ref() as *const LoadFuture as *mut LoadFuture);
+            }
+            return Poll::Pending;
+        }
+
+        if self.done {
+            let value = 
+            unsafe {
+                (*self.storage).load(&self.key[..]).as_ref()
+            };
+            Poll::Ready(match value {
+                None => not_found_constant(),
+                Some(v) => String::from(v),
+            })
+        } else {
+            Poll::Pending
+        }
     }
 }
 

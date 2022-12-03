@@ -41,7 +41,7 @@ void wake_store_task(StoreTask& task) {
     task.schedule_me();
 }
 
-void schedule_callback_after_one_second(Fn<void(StoreFuture*)> fn, StoreFuture* data) {
+void schedule_callback_for_store_future_after_one_second(Fn<void(StoreFuture*)> fn, StoreFuture* data) {
     (void)seastar::sleep(std::chrono::seconds(1)).then([fn, data] {
         fn(data);
     });

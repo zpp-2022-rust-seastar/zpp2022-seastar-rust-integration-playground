@@ -46,7 +46,7 @@ void wake_load_task(LoadTask& task) {
     task.schedule_me();
 }
 
-void schedule_callback_after_one_second(Fn<void(LoadFuture*)> fn, LoadFuture* data) {
+void schedule_callback_for_load_future_after_one_second(Fn<void(LoadFuture*)> fn, LoadFuture* data) {
     (void)seastar::sleep(std::chrono::seconds(1)).then([fn, data] {
         fn(data);
     });
