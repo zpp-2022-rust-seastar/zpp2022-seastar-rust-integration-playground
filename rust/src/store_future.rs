@@ -22,7 +22,6 @@ impl Future for StoreFuture {
             self.as_mut().running = true;
             self.as_mut().waker = Some(ctx.waker().clone());
             fn callback(x: *mut StoreFuture) {
-                println!("X is: {:p}", x);
                 unsafe {
                     (*x).done = true;
                     (*x).waker.take().map(|w| w.wake());
@@ -36,7 +35,8 @@ impl Future for StoreFuture {
 
         if self.done {
             unsafe {
-                (*self.storage).store(&self.key[..], &self.value[..]);
+                (*self.storage).store(&self.key, &self.value);
+                println!("STORE${}${}$", self.key, self.value);
                 Poll::Ready(())
             }
         } else {

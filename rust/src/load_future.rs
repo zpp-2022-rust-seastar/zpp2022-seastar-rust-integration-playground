@@ -22,7 +22,6 @@ impl Future for LoadFuture {
             self.as_mut().running = true;
             self.as_mut().waker = Some(ctx.waker().clone());
             fn callback(x: *mut LoadFuture) {
-                println!("X is: {:p}", x);
                 unsafe {
                     (*x).done = true;
                     (*x).waker.take().map(|w| w.wake());
@@ -37,8 +36,9 @@ impl Future for LoadFuture {
         if self.done {
             let value = 
             unsafe {
-                (*self.storage).load(&self.key[..]).as_ref()
+                (*self.storage).load(&self.key).as_ref()
             };
+            println!("LOAD${}$", self.key);
             Poll::Ready(match value {
                 None => not_found_constant(),
                 Some(v) => String::from(v),

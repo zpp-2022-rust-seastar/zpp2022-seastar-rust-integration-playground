@@ -24,7 +24,6 @@ StoreFuture& StoreTask::get_store_fut() {
 }
 
 StoreTask::StoreTask(RustStorage* rust_storage, const std::string& key, const std::string& val) : continuation_base_with_promise(seastar::promise<>()) {
-    printf("Here I am: %p\n", this);
     _rfut = create_store_future(rust_storage, String(key), String(val));
 }
 
@@ -37,7 +36,6 @@ seastar::future<> StoreTask::get_future() {
 }
 
 void wake_store_task(StoreTask& task) {
-    printf("Task: %p\n", &task);
     task.schedule_me();
 }
 
