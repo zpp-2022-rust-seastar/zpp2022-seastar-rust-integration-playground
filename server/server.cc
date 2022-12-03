@@ -2,8 +2,6 @@
 
 using namespace seastar;
 
-namespace rust {
-
 static uint16_t calc_hash(const std::string& s) {
     uint16_t res = 0;
     for (char c: s) {
@@ -13,7 +11,7 @@ static uint16_t calc_hash(const std::string& s) {
 }
 
 tcp_server::tcp_server() : peering_sharded_service<tcp_server>() {
-    _rust_storage = create_rust_storage();
+    _rust_storage = rust::create_rust_storage();
 }
 
 future<> tcp_server::listen(ipv4_addr addr) {
@@ -53,7 +51,7 @@ void tcp_server::do_accept(server_socket& listener) {
 }
 
 future<> tcp_server::store(const std::string& key, const std::string& value) {
-    auto* t = new StoreTask(_rust_storage, key, value);
+    auto* t = new rust::StoreTask(_rust_storage, key, value);
     future<> f = t->get_future();
     seastar::schedule(t);
     return f;
@@ -132,5 +130,3 @@ future<> tcp_server::connection::write(const std::string& msg) {
     co_await _write_buf.write(msg);
     co_await _write_buf.flush();
 }
-
-} // namespace rust

@@ -13,10 +13,6 @@
 #include <seastar/core/sharded.hh>
 #include <seastar/core/temporary_buffer.hh>
 
-namespace rust {
-
-struct RustStorage;
-
 const std::string done = "DONE$";
 const std::string found = "FOUND$";
 const std::string not_found = "NOTFOUND$";
@@ -25,7 +21,7 @@ const std::regex load_reg("LOAD\\$[a-z]*\\$");
 
 class tcp_server : public seastar::peering_sharded_service<tcp_server> {
     seastar::server_socket _tcp_listener;
-    RustStorage* _rust_storage;
+    rust::RustStorage* _rust_storage;
 public:
     tcp_server();
 
@@ -56,5 +52,3 @@ public:
         seastar::future<> write(const std::string& msg);
     };
 };
-
-} // namespace rust
