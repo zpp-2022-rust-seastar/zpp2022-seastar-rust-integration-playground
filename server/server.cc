@@ -10,9 +10,9 @@ static uint16_t calc_hash(const std::string& s) {
     return res % smp::count;
 }
 
-tcp_server::tcp_server() : peering_sharded_service<tcp_server>() {
-    _rust_storage = rust::create_rust_storage();
-}
+tcp_server::tcp_server() :
+    peering_sharded_service<tcp_server>(),
+    _rust_storage(rust::create_rust_storage()) {}
 
 future<> tcp_server::listen(ipv4_addr addr) {
     listen_options lo;

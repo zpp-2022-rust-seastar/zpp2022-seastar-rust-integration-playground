@@ -17,12 +17,6 @@ impl RustStorage {
     }
 }
 
-pub fn create_rust_storage() -> *mut RustStorage {
-    Box::into_raw(Box::new(RustStorage {
-        dict: HashMap::new(),
-    }))
-}
-
-pub unsafe fn delete_rust_storage(rs: *mut RustStorage) {
-    let _ = Box::from_raw(rs);
+pub fn create_rust_storage() -> Box<RustStorage> {
+    Box::new(RustStorage { dict: HashMap::new() })
 }

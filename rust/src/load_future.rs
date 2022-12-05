@@ -7,15 +7,15 @@ use crate::not_found_constant;
 use crate::rust_storage::RustStorage;
 use crate::waker::LOAD_WAKER_VTABLE;
 
-pub struct LoadFuture {
+pub struct LoadFuture<'a> {
     running: bool,
     done: bool,
     waker: Option<Waker>,
-    storage: *mut RustStorage,
+    storage: &'a mut Box<RustStorage>,
     key: String,
 }
 
-impl Future for LoadFuture {
+impl<'a> Future for LoadFuture<'a> {
     type Output = String;
     fn poll(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<Self::Output> {
         if !self.running {
@@ -36,7 +36,7 @@ impl Future for LoadFuture {
         if self.done {
             let value = 
             unsafe {
-                (*self.storage).load(&self.key).as_ref()
+                self.storage.load(&self.key).as_ref()
             };
             println!("LOAD${}$", self.key);
             Poll::Ready(match value {
@@ -64,7 +64,7 @@ pub fn poll_load_future(task: Pin<&mut super::ffi::LoadTask>, out: &mut String) 
     }
 }
 
-pub fn create_load_future(storage: *mut RustStorage, key: String) -> *mut LoadFuture {
+pub fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> *mut LoadFuture {
     Box::into_raw(Box::new(LoadFuture {
         running: false,
         done: false,

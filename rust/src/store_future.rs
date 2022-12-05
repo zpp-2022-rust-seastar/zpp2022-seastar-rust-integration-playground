@@ -6,16 +6,16 @@ use crate::ffi::schedule_callback_for_store_future_after_one_second;
 use crate::rust_storage::RustStorage;
 use crate::waker::STORE_WAKER_VTABLE;
 
-pub struct StoreFuture {
+pub struct StoreFuture<'a> {
     running: bool,
     done: bool,
     waker: Option<Waker>,
-    storage: *mut RustStorage,
+    storage: &'a mut Box<RustStorage>,
     key: String,
     value: String,
 }
 
-impl Future for StoreFuture {
+impl<'a> Future for StoreFuture<'a> {
     type Output = ();
     fn poll(mut self: Pin<&mut Self>, ctx: &mut Context<'_>) -> Poll<Self::Output> {
         if !self.running {
@@ -34,11 +34,11 @@ impl Future for StoreFuture {
         }
 
         if self.done {
-            unsafe {
-                (*self.storage).store(&self.key, &self.value);
-                println!("STORE${}${}$", self.key, self.value);
-                Poll::Ready(())
-            }
+            let k = &self.key.clone();
+            let v = &self.key.clone();
+            self.storage.store(k, v);
+            println!("STORE${}${}$", self.key, self.value);
+            Poll::Ready(())
         } else {
             Poll::Pending
         }        
@@ -54,7 +54,7 @@ pub fn poll_store_future(task: Pin<&mut super::ffi::StoreTask>) -> bool {
     matches!(Pin::new(fut).poll(&mut ctx), Poll::Ready(_))
 }
 
-pub fn create_store_future(storage: *mut RustStorage, key: String, value: String) -> *mut StoreFuture {
+pub fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> *mut StoreFuture {
     Box::into_raw(Box::new(StoreFuture {
         running: false,
         done: false,

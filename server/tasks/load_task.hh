@@ -18,7 +18,7 @@ struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise
 
     LoadFuture& get_load_fut();
 
-    LoadTask(RustStorage* rust_storage, const std::string& key);
+    LoadTask(Box<RustStorage> &rust_storage, const std::string& key);
 
     virtual ~LoadTask();
 

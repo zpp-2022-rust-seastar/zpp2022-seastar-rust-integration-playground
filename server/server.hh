@@ -21,7 +21,7 @@ const std::regex load_reg("LOAD\\$[a-z]*\\$");
 
 class tcp_server : public seastar::peering_sharded_service<tcp_server> {
     seastar::server_socket _tcp_listener;
-    rust::RustStorage* _rust_storage;
+    rust::Box<rust::RustStorage> _rust_storage;
 public:
     tcp_server();
 

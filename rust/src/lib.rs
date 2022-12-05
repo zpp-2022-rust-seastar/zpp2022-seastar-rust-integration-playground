@@ -1,6 +1,6 @@
 mod rust_storage;
 
-use rust_storage::{create_rust_storage, delete_rust_storage};
+use rust_storage::create_rust_storage;
 use rust_storage::RustStorage;
 
 mod waker;
@@ -20,17 +20,16 @@ mod ffi {
 
     extern "Rust" {
         type RustStorage;
-        fn create_rust_storage() -> *mut RustStorage;
-        unsafe fn delete_rust_storage(rs: *mut RustStorage);
+        fn create_rust_storage() -> Box<RustStorage>;
 
-        type StoreFuture;
+        type StoreFuture<'a>;
         fn poll_store_future(task: Pin<&mut StoreTask>) -> bool;
-        unsafe fn create_store_future(storage: *mut RustStorage, key: String, value: String) -> *mut StoreFuture;
+        unsafe fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> *mut StoreFuture;
         unsafe fn delete_store_future(fut: *mut StoreFuture);
 
-        type LoadFuture;
+        type LoadFuture<'a>;
         fn poll_load_future(task: Pin<&mut LoadTask>, out: &mut String) -> bool;
-        unsafe fn create_load_future(storage: *mut RustStorage, key: String) -> *mut LoadFuture;
+        unsafe fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> *mut LoadFuture;
         unsafe fn delete_load_future(fut: *mut LoadFuture);
 
         fn not_found_constant() -> String;
