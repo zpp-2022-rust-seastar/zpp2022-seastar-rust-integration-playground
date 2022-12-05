@@ -9,7 +9,7 @@ struct LoadFuture;
 struct RustStorage;
 
 struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise<std::optional<std::string>>, std::optional<std::string>> {
-    LoadFuture* _rfut;
+    Box<LoadFuture> _rfut;
     bool _scheduled = true;
 
     void schedule_me();
@@ -18,7 +18,7 @@ struct LoadTask: public seastar::continuation_base_with_promise<seastar::promise
 
     LoadFuture& get_load_fut();
 
-    LoadTask(Box<RustStorage> &rust_storage, const std::string& key);
+    LoadTask(Box<RustStorage>& rust_storage, const std::string& key);
 
     virtual ~LoadTask();
 

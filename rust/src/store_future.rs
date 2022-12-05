@@ -54,17 +54,13 @@ pub fn poll_store_future(task: Pin<&mut super::ffi::StoreTask>) -> bool {
     matches!(Pin::new(fut).poll(&mut ctx), Poll::Ready(_))
 }
 
-pub fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> *mut StoreFuture {
-    Box::into_raw(Box::new(StoreFuture {
+pub fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> Box<StoreFuture> {
+    Box::new(StoreFuture {
         running: false,
         done: false,
         waker: None,
         storage: storage,
         key: key,
         value: value,
-    }))
-}
-
-pub unsafe fn delete_store_future(fut: *mut StoreFuture) {
-    let _ = Box::from_raw(fut);
+    })
 }

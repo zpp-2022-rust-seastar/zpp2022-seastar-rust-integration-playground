@@ -7,12 +7,12 @@ mod waker;
 
 mod store_future;
 
-use store_future::{poll_store_future, create_store_future, delete_store_future};
+use store_future::{poll_store_future, create_store_future};
 use store_future::StoreFuture;
 
 mod load_future;
 
-use load_future::{poll_load_future, create_load_future, delete_load_future};
+use load_future::{poll_load_future, create_load_future};
 use load_future::LoadFuture;
 
 #[cxx::bridge(namespace = "rust")]
@@ -24,13 +24,11 @@ mod ffi {
 
         type StoreFuture<'a>;
         fn poll_store_future(task: Pin<&mut StoreTask>) -> bool;
-        unsafe fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> *mut StoreFuture;
-        unsafe fn delete_store_future(fut: *mut StoreFuture);
+        unsafe fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> Box<StoreFuture>;
 
         type LoadFuture<'a>;
         fn poll_load_future(task: Pin<&mut LoadTask>, out: &mut String) -> bool;
-        unsafe fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> *mut LoadFuture;
-        unsafe fn delete_load_future(fut: *mut LoadFuture);
+        unsafe fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> Box<LoadFuture>;
 
         fn not_found_constant() -> String;
     }

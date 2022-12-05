@@ -9,7 +9,7 @@ struct StoreFuture;
 struct RustStorage;
 
 struct StoreTask : public seastar::continuation_base_with_promise<seastar::promise<>, void> {
-    StoreFuture* _rfut;
+    Box<StoreFuture> _rfut;
     bool _scheduled = true;
 
     void schedule_me();
@@ -18,7 +18,7 @@ struct StoreTask : public seastar::continuation_base_with_promise<seastar::promi
 
     StoreFuture& get_store_fut();
 
-    StoreTask(Box<RustStorage> &rust_storage, const std::string& key, const std::string& val);
+    StoreTask(Box<RustStorage>& rust_storage, const std::string& key, const std::string& val);
 
     virtual ~StoreTask();
 

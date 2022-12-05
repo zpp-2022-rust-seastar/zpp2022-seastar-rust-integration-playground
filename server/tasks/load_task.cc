@@ -28,13 +28,11 @@ LoadFuture& LoadTask::get_load_fut() {
     return *_rfut;
 }
 
-LoadTask::LoadTask(Box<RustStorage>& rust_storage, const std::string& key) : continuation_base_with_promise(seastar::promise<std::optional<std::string>>()) {
-    _rfut = create_load_future(rust_storage, String(key));
-}
+LoadTask::LoadTask(Box<RustStorage>& rust_storage, const std::string& key)
+    : continuation_base_with_promise(seastar::promise<std::optional<std::string>>()),
+    _rfut(create_load_future(rust_storage, String(key))) {}
 
-LoadTask::~LoadTask() {
-    delete_load_future(_rfut);
-}
+LoadTask::~LoadTask() {}
 
 seastar::future<std::optional<std::string>> LoadTask::get_future() {
     return _pr.get_future();

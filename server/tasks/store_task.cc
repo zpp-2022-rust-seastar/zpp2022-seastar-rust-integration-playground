@@ -23,13 +23,11 @@ StoreFuture& StoreTask::get_store_fut() {
     return *_rfut;
 }
 
-StoreTask::StoreTask(Box<RustStorage>& rust_storage, const std::string& key, const std::string& val) : continuation_base_with_promise(seastar::promise<>()) {
-    _rfut = create_store_future(rust_storage, String(key), String(val));
-}
+StoreTask::StoreTask(Box<RustStorage>& rust_storage, const std::string& key, const std::string& val)
+    : continuation_base_with_promise(seastar::promise<>()),
+    _rfut(create_store_future(rust_storage, String(key), String(val))) {}
 
-StoreTask::~StoreTask() {
-    delete_store_future(_rfut);
-}
+StoreTask::~StoreTask() {}
 
 seastar::future<> StoreTask::get_future() {
     return _pr.get_future();

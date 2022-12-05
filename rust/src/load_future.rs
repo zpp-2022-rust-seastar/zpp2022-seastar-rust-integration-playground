@@ -38,7 +38,7 @@ impl<'a> Future for LoadFuture<'a> {
             unsafe {
                 self.storage.load(&self.key).as_ref()
             };
-            println!("LOAD${}$", self.key);
+            println!("LOAD${}$", &self.key);
             Poll::Ready(match value {
                 None => not_found_constant(),
                 Some(v) => String::from(v),
@@ -64,16 +64,12 @@ pub fn poll_load_future(task: Pin<&mut super::ffi::LoadTask>, out: &mut String) 
     }
 }
 
-pub fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> *mut LoadFuture {
-    Box::into_raw(Box::new(LoadFuture {
+pub fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> Box<LoadFuture> {
+    Box::new(LoadFuture {
         running: false,
         done: false,
         waker: None,
         storage: storage,
         key: key,
-    }))
-}
-
-pub unsafe fn delete_load_future(fut: *mut LoadFuture) {
-    let _ = Box::from_raw(fut);
+    })
 }
