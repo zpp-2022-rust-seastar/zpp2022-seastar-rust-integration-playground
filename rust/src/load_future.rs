@@ -69,7 +69,7 @@ pub fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> Box<Lo
         running: false,
         done: false,
         waker: None,
-        storage: storage,
-        key: key,
+        storage,
+        key,
     })
 }

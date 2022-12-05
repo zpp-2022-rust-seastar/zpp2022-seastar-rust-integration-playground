@@ -24,11 +24,11 @@ mod ffi {
 
         type StoreFuture<'a>;
         fn poll_store_future(task: Pin<&mut StoreTask>) -> bool;
-        unsafe fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> Box<StoreFuture>;
+        fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: String) -> Box<StoreFuture>;
 
         type LoadFuture<'a>;
         fn poll_load_future(task: Pin<&mut LoadTask>, out: &mut String) -> bool;
-        unsafe fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> Box<LoadFuture>;
+        fn create_load_future(storage: &mut Box<RustStorage>, key: String) -> Box<LoadFuture>;
 
         fn not_found_constant() -> String;
     }

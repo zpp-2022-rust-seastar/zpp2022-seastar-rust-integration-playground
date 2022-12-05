@@ -35,7 +35,7 @@ impl<'a> Future for StoreFuture<'a> {
 
         if self.done {
             let k = &self.key.clone();
-            let v = &self.key.clone();
+            let v = &self.value.clone();
             self.storage.store(k, v);
             println!("STORE${}${}$", self.key, self.value);
             Poll::Ready(())
@@ -59,8 +59,8 @@ pub fn create_store_future(storage: &mut Box<RustStorage>, key: String, value: S
         running: false,
         done: false,
         waker: None,
-        storage: storage,
-        key: key,
-        value: value,
+        storage,
+        key,
+        value,
     })
 }

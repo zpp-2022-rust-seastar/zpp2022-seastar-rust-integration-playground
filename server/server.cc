@@ -58,7 +58,7 @@ future<> tcp_server::store(const std::string& key, const std::string& value) {
 }
 
 future<std::optional<std::string>> tcp_server::load(const std::string& key) {
-    auto* t = new LoadTask(_rust_storage, key);
+    auto* t = new rust::LoadTask(_rust_storage, key);
     future<std::optional<std::string>> f = t->get_future();
     seastar::schedule(t);
     return f;
