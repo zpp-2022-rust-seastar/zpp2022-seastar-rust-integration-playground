@@ -23,3 +23,7 @@ extern "C" char* load_from_rust(const char* key) {
 
     return strdup((it->second).c_str());
 }
+
+extern "C" void free_from_rust(char* ptr) {
+    free(ptr);
+}

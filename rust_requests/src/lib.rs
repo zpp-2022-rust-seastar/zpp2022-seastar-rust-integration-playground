@@ -6,6 +6,8 @@ extern {
     fn store_from_rust(key: *const c_char, key: *const c_char);
 
     fn load_from_rust(key: *const c_char) -> *mut c_char;
+
+    fn free_from_rust(key: *mut c_char);
 }
 
 fn do_load_from_rust(key: &CString) {
@@ -16,7 +18,7 @@ fn do_load_from_rust(key: &CString) {
         } else {
             let loaded_value = CStr::from_ptr(loaded_value_ptr).to_str().unwrap();
             println!("FOUND${loaded_value}$");
-            let _ = Box::from_raw(loaded_value_ptr); // free(loaded_value_ptr)
+            free_from_rust(loaded_value_ptr);
         }
     }
 }
