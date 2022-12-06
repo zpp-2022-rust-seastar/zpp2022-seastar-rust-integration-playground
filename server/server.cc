@@ -30,9 +30,8 @@ void tcp_server::do_accept(server_socket& listener) {
     (void)listener.accept().then([this, &listener] (accept_result ar) mutable {
         connected_socket fd = std::move(ar.connection);
         socket_address addr = std::move(ar.remote_address);
-        auto conn = new connection(*this, std::move(fd), addr);
-        (void)conn->process().then_wrapped([conn] (auto&& f) {
-            delete conn;
+        auto conn = std::make_unique<tcp_server::connection>(*this, std::move(fd), addr);
+        (void)conn->process().then_wrapped([conn = std::move(conn)] (auto&& f) {
             try {
                 f.get();
             } catch (std::exception& ex) {
@@ -40,12 +39,8 @@ void tcp_server::do_accept(server_socket& listener) {
             }
         });
         do_accept(listener);
-    }).then_wrapped([] (auto&& f) {
-        try {
-            f.get();
-        } catch (std::exception& ex) {
-            std::cout << "accept failed: " << ex.what() << "\n";
-        }
+    }).handle_exception_type([] (std::exception& ex) {
+        std::cout << "accept failed: " << ex.what() << std::endl;
     });
 }
 
@@ -106,6 +101,9 @@ future<std::string> tcp_server::connection::read_once() {
     std::string buffer;
     while (buffer.empty() || buffer.back() != '$') {
         auto tmp = co_await _read_buf.read_exactly(1);
+        if (tmp.empty()) {
+            break;
+        }
         buffer.push_back(tmp[0]);
     }
 
