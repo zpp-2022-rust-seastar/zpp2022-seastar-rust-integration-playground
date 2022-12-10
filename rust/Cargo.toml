@@ -1,0 +1,14 @@
+[lib]
+crate-type = ["staticlib"]
+name = "rust"
+
+[package]
+name = "rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cxx = "1.0.82"
+
+[build-dependencies]
+cxx-build = "1.0.82"
