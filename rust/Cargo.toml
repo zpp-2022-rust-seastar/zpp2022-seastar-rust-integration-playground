@@ -9,6 +9,7 @@ edition = "2021"
 
 [dependencies]
 cxx = "1.0.82"
+cxx-async = "0.1"
 
 [build-dependencies]
 cxx-build = "1.0.82"

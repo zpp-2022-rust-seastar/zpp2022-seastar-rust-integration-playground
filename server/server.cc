@@ -51,17 +51,16 @@ void tcp_server::do_accept(server_socket& listener) {
 }
 
 future<> tcp_server::store(const std::string& key, const std::string& value) {
-    auto* t = new rust::StoreTask(_rust_storage, key, value);
-    future<> f = t->get_future();
-    seastar::schedule(t);
-    return f;
+    co_await _rust_storage.store(key, value);
+    co_return;
 }
 
 future<std::optional<std::string>> tcp_server::load(const std::string& key) {
-    auto* t = new rust::LoadTask(_rust_storage, key);
-    future<std::optional<std::string>> f = t->get_future();
-    seastar::schedule(t);
-    return f;
+    try {
+        return co_await _rust_storage.load(key);
+    } catch (const std::exception& error) {
+        return {};
+    }
 }
 
 tcp_server::connection::connection(tcp_server& server, connected_socket&& fd, socket_address addr)
