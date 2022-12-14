@@ -1,0 +1,41 @@
+[package]
+name = "cxx-async"
+version = "0.1.1"
+authors = ["Patrick Walton <pcwalton@mimiga.net>"]
+edition = "2021"
+links = "cxx-async"
+description = "Simple interoperability between C++ coroutines and asynchronous Rust"
+license = "MIT OR Apache-2.0"
+readme = "../README.md"
+repository = "https://github.com/pcwalton/cxx-async"
+keywords = ["ffi", "c++", "async"]
+homepage = "https://github.com/pcwalton/cxx-async"
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["lib"]
+
+[dependencies]
+async-recursion = "1"
+once_cell = "1"
+pin-utils = "0.1"
+
+[dependencies.cxx]
+version = "1"
+features = ["c++20"]
+
+[dependencies.cxx-async-macro]
+path = "../macro"
+version = "0.1.1"
+
+[dependencies.futures]
+version = "0.3"
+features = ["thread-pool"]
+
+[dependencies.link-cplusplus]
+version = "1"
+features = ["libc++"]
+
+[build-dependencies]
+cxx-build = "1"
+pkg-config = "0.3"
