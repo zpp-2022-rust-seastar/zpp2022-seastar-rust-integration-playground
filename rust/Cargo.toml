@@ -9,7 +9,9 @@ edition = "2021"
 
 [dependencies]
 cxx = "1.0.82"
-cxx-async = "0.1"
+
+[dependencies.cxx-async]
+path = "../cxx-async/cxx-async"
 
 [build-dependencies]
 cxx-build = "1.0.82"

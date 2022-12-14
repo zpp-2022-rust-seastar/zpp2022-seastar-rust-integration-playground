@@ -1,10 +1,10 @@
 fn main() {
-    let tasks_dir = "../server/tasks";
     cxx_build::bridge("src/lib.rs")
-        .file(format!("{tasks_dir}/store_task.cc"))
-        .file(format!("{tasks_dir}/load_task.cc"))
+        .file("../server/ffi.cc")
         .flag_if_supported("-std=c++20")
+        .flag_if_supported("-fcoroutines")
         .define("SEASTAR_API_LEVEL", "6")
         .define("SEASTAR_SCHEDULING_GROUPS_COUNT", "16")
+        .include("../cxx-async/cxx-async/include")
         .compile("cpp_ffi");
 }

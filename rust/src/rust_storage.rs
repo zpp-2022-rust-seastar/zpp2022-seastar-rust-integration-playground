@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use cxx_async::CxxAsyncException;
 use crate::ffi::{LoadFuture, StoreFuture, seastar_sleep_1s};
 
 pub struct RustStorage {

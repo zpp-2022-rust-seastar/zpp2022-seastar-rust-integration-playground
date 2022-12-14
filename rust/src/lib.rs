@@ -2,7 +2,9 @@ mod rust_storage;
 
 use rust_storage::{create_rust_storage, RustStorage};
 
-#[cxx::bridge(namespace = "rust")]
+use std::future::Future;
+
+#[cxx::bridge]
 mod ffi {
 
     extern "Rust" {
