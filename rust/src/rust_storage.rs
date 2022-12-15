@@ -9,14 +9,14 @@ pub struct RustStorage {
 impl RustStorage {
     pub fn store(&'static mut self, key: &'static str, val: &'static str) -> StoreFuture {
         StoreFuture::infallible(async {
-            seastar_sleep_1s().await;
+            seastar_sleep_1s().await.unwrap();
             self.dict.insert(key.to_string(), val.to_string());
         })
     }
 
     pub fn load(&'static self, key: &'static str) -> LoadFuture {
         LoadFuture::fallible(async move {
-            seastar_sleep_1s().await;
+            seastar_sleep_1s().await.unwrap();
             match self.dict.get(key) {
                 None => Err(CxxAsyncException::new(format!("entry for {key} not found").to_owned().into_boxed_str())),
                 Some(val) => Ok(val.clone()),
