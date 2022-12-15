@@ -12,7 +12,7 @@ static uint16_t calc_hash(const std::string& s) {
 
 tcp_server::tcp_server() :
     peering_sharded_service<tcp_server>(),
-    _rust_storage(rust::create_rust_storage()) {}
+    _rust_storage(create_rust_storage()) {}
 
 future<> tcp_server::listen(ipv4_addr addr) {
     listen_options lo;
@@ -52,14 +52,13 @@ void tcp_server::do_accept(server_socket& listener) {
 
 future<> tcp_server::store(const std::string& key, const std::string& value) {
     co_await _rust_storage.store(key, value);
-    co_return;
 }
 
 future<std::optional<std::string>> tcp_server::load(const std::string& key) {
     try {
-        return co_await _rust_storage.load(key);
+        co_return _rust_storage.load(key);
     } catch (const std::exception& error) {
-        return {};
+        co_return std::nullopt;
     }
 }
 
