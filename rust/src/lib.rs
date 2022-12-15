@@ -1,6 +1,6 @@
 mod rust_storage;
 
-use rust_storage::{create_rust_storage, RustStorage};
+use rust_storage::{create_rust_storage, load, store, RustStorage};
 
 use std::future::Future;
 
@@ -10,6 +10,8 @@ mod ffi {
     extern "Rust" {
         type RustStorage;
         fn create_rust_storage() -> Box<RustStorage>;
+        fn store(storage: &'static mut RustStorage, key: &'static str, val: &'static str) -> StoreFuture;
+        fn load(storage: &'static RustStorage, key: &'static str) -> LoadFuture;
     }
 
     unsafe extern "C++" {

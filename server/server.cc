@@ -51,12 +51,13 @@ void tcp_server::do_accept(server_socket& listener) {
 }
 
 future<> tcp_server::store(const std::string& key, const std::string& value) {
-    co_await _rust_storage.store(key, value);
+    co_await ::store(*_rust_storage, key, value);
 }
 
 future<std::optional<std::string>> tcp_server::load(const std::string& key) {
     try {
-        co_return _rust_storage.load(key);
+        rust::String value = co_await ::load(*_rust_storage, key);
+        co_return std::string(value.c_str());
     } catch (const std::exception& error) {
         co_return std::nullopt;
     }
