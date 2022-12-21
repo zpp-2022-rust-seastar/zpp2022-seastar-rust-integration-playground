@@ -7,6 +7,7 @@
 #define RUST_CXX_ASYNC_SEASTAR_H
 
 #include "rust/cxx_async.h"
+#include "awaiter.hh"
 #include <seastar/core/future.hh>
 
 namespace rust {
@@ -22,8 +23,8 @@ class AwaitTransformer<
  public:
   static auto await_transform(
       RustPromiseBase<Future>& promise,
-      T&& semiawaitable) noexcept {
-    return std::move(nullptr);
+      seastar::future<T>&& future) noexcept {
+    return awaiter<false, T>(std::move(future));
   }
 };
 

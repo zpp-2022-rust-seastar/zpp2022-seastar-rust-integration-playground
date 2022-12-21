@@ -39,7 +39,7 @@ public:
     awaiter(awaiter&&) = delete;
 
     bool await_ready() const noexcept {
-        return _future.available() && !need_preempt();
+        return _future.available() && !seastar::need_preempt();
     }
 
     template<typename U>
@@ -52,7 +52,7 @@ public:
     std::tuple<T...> await_resume() { return _future.get(); }
 };
 
-template<bool CheckPreempt, typename T>
+template<typename T>
 struct awaiter<false, T> {
     seastar::future<T> _future;
 public:
@@ -62,7 +62,7 @@ public:
     awaiter(awaiter&&) = delete;
 
     bool await_ready() const noexcept {
-        return _future.available() && !need_preempt();
+        return _future.available() && !seastar::need_preempt();
     }
 
     template<typename U>
@@ -85,7 +85,7 @@ public:
     awaiter(awaiter&&) = delete;
 
     bool await_ready() const noexcept {
-        return _future.available() && !need_preempt();
+        return _future.available() && !seastar::need_preempt();
     }
 
     template<typename U>
