@@ -38,9 +38,7 @@ public:
     cxx_awaiter(const cxx_awaiter&) = delete;
     cxx_awaiter(cxx_awaiter&&) = delete;
 
-    bool await_ready() const noexcept {
-        return _future.available() && !seastar::need_preempt();
-    }
+    bool await_ready() const noexcept { return _future.available(); }
 
     template<typename U>
     void await_suspend(SEASTAR_INTERNAL_COROUTINE_NAMESPACE::coroutine_handle<U> hndl) noexcept {
@@ -67,9 +65,7 @@ public:
     cxx_awaiter(const cxx_awaiter&) = delete;
     cxx_awaiter(cxx_awaiter&&) = delete;
 
-    bool await_ready() const noexcept {
-        return _future.available() && !seastar::need_preempt();
-    }
+    bool await_ready() const noexcept { return _future.available(); }
 
     template<typename U>
     void await_suspend(SEASTAR_INTERNAL_COROUTINE_NAMESPACE::coroutine_handle<U> hndl) noexcept {
@@ -96,9 +92,7 @@ public:
     cxx_awaiter(const cxx_awaiter&) = delete;
     cxx_awaiter(cxx_awaiter&&) = delete;
 
-    bool await_ready() const noexcept {
-        return _future.available() && !seastar::need_preempt();
-    }
+    bool await_ready() const noexcept { return _future.available(); }
 
     template<typename U>
     void await_suspend(SEASTAR_INTERNAL_COROUTINE_NAMESPACE::coroutine_handle<U> hndl) noexcept {
