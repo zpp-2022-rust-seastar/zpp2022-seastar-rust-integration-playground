@@ -32,5 +32,4 @@ target_include_directories(
     server
     PRIVATE ${RUST_TARGET_DIR}/cxxbridge
     PRIVATE ${CMAKE_SOURCE_DIR}
-    PRIVATE ${CMAKE_SOURCE_DIR}/cxx-async/cxx-async/include
 )
