@@ -1,0 +1,16 @@
+[lib]
+crate-type = ["staticlib"]
+name = "rust"
+
+[package]
+name = "rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cxx = "1.0.82"
+cxx-async = { git = "https://github.com/kfernandez31/cxx-async", rev = "74bc92eb46c07f25ac79277e7bdd6c88ceec2a1c" }
+# branch = "seastar"
+
+[build-dependencies]
+cxx-build = "1.0.82"
