@@ -1,6 +1,5 @@
 use std::{fs, env};
 use std::path::Path;
-use std::io::Write;
 
 fn copy_cxx_async_headers() {
     let build_path = env::current_dir().unwrap().parent().unwrap().join("build").join("rust");
@@ -27,11 +26,14 @@ fn copy_cxx_async_headers() {
 
 fn main() {
     copy_cxx_async_headers();
-    cxx_build::bridge("src/lib.rs")
-        .file("../server/ffi.cc")
+    let cur_dir = env::current_dir().unwrap();
+    let parent_dir = cur_dir.parent().unwrap();
+    cxx_build::bridge(Path::new("src").join("lib.rs"))
+        .file(parent_dir.join("server").join("ffi.cc"))
         .flag_if_supported("-std=c++20")
         .flag_if_supported("-fcoroutines")
         .define("SEASTAR_API_LEVEL", "6")
         .define("SEASTAR_SCHEDULING_GROUPS_COUNT", "16")
+        .include(parent_dir.join("build").join("rust").join("cxxbridge"))
         .compile("cpp_ffi");
 }
